@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>El Niño Watch 2026–27</title>
+<meta name="description" content="En lugn, användbar löpande bevakning av den utvecklande El Niño 2026–27 – och vad den kan betyda för livet i Sverige." />
+<style>
+  :root{
+    --ocean-deep:#0b2a3a; --ocean:#123f57; --ocean-2:#1c6d84;
+    --sun:#e98a3c; --teal:#1f8a8a; --paper:#f5f8fa; --card:#ffffff;
+    --ink:#16242c; --muted:#5c6f79; --line:#e2e9ee;
+    --tag-travel:#2b7bb9; --tag-rates:#8a5a2b; --tag-infl:#b1543f;
+    --tag-temp:#c9772a; --tag-invest:#2f7d5b; --tag-generic:#5c6f79;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);
+    font:16px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    -webkit-text-size-adjust:100%}
+  a{color:var(--ocean-2)}
+  header.site{background:linear-gradient(160deg,var(--ocean-deep),var(--ocean-2));
+    color:#eaf3f7;padding:34px 20px 30px}
+  .wrap{max-width:720px;margin:0 auto}
+  header.site h1{margin:0 0 6px;font-size:1.7rem;letter-spacing:.2px}
+  header.site .tag{margin:0;color:#bcd6e1;font-size:1.02rem}
+  header.site .sun{color:var(--sun)}
+  .about{background:var(--card);border:1px solid var(--line);border-radius:14px;
+    padding:16px 18px;margin:20px 0;font-size:.96rem;color:var(--muted)}
+  .about b{color:var(--ink)}
+  .legend{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+  .chip{font-size:.72rem;font-weight:600;color:#fff;border-radius:999px;
+    padding:2px 9px;letter-spacing:.2px;white-space:nowrap}
+  .c-travel{background:var(--tag-travel)} .c-rates{background:var(--tag-rates)}
+  .c-inflation{background:var(--tag-infl)} .c-temp{background:var(--tag-temp)}
+  .c-invest{background:var(--tag-invest)} .c-generic{background:var(--tag-generic)}
+  main{padding:0 20px 60px}
+  .post{background:var(--card);border:1px solid var(--line);border-radius:16px;
+    padding:22px 22px 18px;margin:18px 0;box-shadow:0 1px 3px rgba(11,42,58,.05)}
+  .post.grounding{border-color:#cfe1ea;box-shadow:0 2px 10px rgba(18,80,107,.10)}
+  .post h2{margin:.1rem 0 .4rem;font-size:1.28rem;line-height:1.3}
+  .meta{font-size:.82rem;color:var(--muted);margin-bottom:12px}
+  .meta .pin{color:var(--sun);font-weight:700}
+  .body p{margin:.7rem 0}
+  .body h3{margin:1.2rem 0 .3rem;font-size:1.05rem}
+  .sources{margin-top:14px;padding-top:12px;border-top:1px solid var(--line);
+    font-size:.85rem;color:var(--muted)}
+  .sources ul{margin:.3rem 0 0;padding-left:1.1rem}
+  .empty{color:var(--muted);text-align:center;padding:40px 10px;font-style:italic}
+  footer{color:var(--muted);font-size:.8rem;text-align:center;padding:24px 20px 50px}
+  footer a{color:var(--muted)}
+</style>
+</head>
+<body>
+<header class="site">
+  <div class="wrap">
+    <h1>El Niño <span class="sun">Watch</span> 2026–27</h1>
+    <p class="tag">En lugn, användbar bevakning av den utvecklande El Niño – och vad den kan betyda för livet i Sverige.</p>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="about">
+    <b>Vad det här är.</b> Ett försök att ge en samlad, begriplig bild av en El Niño som just nu förstärks – utan domedagsrubriker och utan att drunkna i facktermer. Varje inlägg kopplar vetenskapen till vad den faktiskt kan betyda praktiskt: resor, räntor, inflation, vinterns och vårens temperatur, investeringar.
+    <br /><br />
+    <b>Hur ofta.</b> Bara när något genuint nytt händer – en ändrad officiell prognos, en verifierad effekt eller en viktig varning. Inga "inget nytt idag"-inlägg.
+    <div class="legend">
+      <span class="chip c-travel">Resor</span>
+      <span class="chip c-rates">Räntor</span>
+      <span class="chip c-inflation">Inflation</span>
+      <span class="chip c-temp">Temperatur</span>
+      <span class="chip c-invest">Investeringar</span>
+    </div>
+  </div>
+
+  <div id="posts"></div>
+</main>
+
+<footer>
+  El Niño Watch · uppdateras automatiskt när läget ändras · källor anges i varje inlägg.
+</footer>
+
+<script>
+const TAGCLASS = {resor:'c-travel','räntor':'c-rates',rantor:'c-rates',inflation:'c-inflation',
+  temperatur:'c-temp',temp:'c-temp',investeringar:'c-invest',invest:'c-invest'};
+function chip(t){const k=(t||'').toLowerCase();const cls=TAGCLASS[k]||'c-generic';
+  return `<span class="chip ${cls}">${t}</span>`;}
+function fmtDate(d){try{return new Date(d).toLocaleDateString('sv-SE',{year:'numeric',month:'long',day:'numeric'});}catch(e){return d;}}
+function render(posts){
+  const el=document.getElementById('posts');
+  if(!posts||!posts.length){el.innerHTML='<div class="empty">Bevakningen är igång. Första inlägget publiceras inom kort.</div>';return;}
+  posts.sort((a,b)=>(b.grounding?1:0)-(a.grounding?1:0) || new Date(b.date)-new Date(a.date));
+  el.innerHTML=posts.map(p=>{
+    const tags=(p.tags||[]).map(chip).join(' ');
+    const src=(p.sources||[]).map(s=>`<li><a href="${s.url}" rel="noopener" target="_blank">${s.name}</a>${s.date?` — ${s.date}`:''}</li>`).join('');
+    return `<article class="post${p.grounding?' grounding':''}">
+      <div class="meta">${p.grounding?'<span class="pin">Grundinlägg</span> · ':''}${fmtDate(p.date)}</div>
+      <h2>${p.title}</h2>
+      ${tags?`<div class="legend">${tags}</div>`:''}
+      <div class="body">${p.html||''}</div>
+      ${src?`<div class="sources"><b>Källor</b><ul>${src}</ul></div>`:''}
+    </article>`;}).join('');
+}
+fetch('posts.json?_='+Date.now()).then(r=>r.ok?r.json():[]).then(render).catch(()=>render([]));
+</script>
+</body>
+</html>
